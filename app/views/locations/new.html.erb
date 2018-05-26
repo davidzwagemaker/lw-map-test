@@ -1,5 +1,12 @@
-<h1>New Location</h1>
+<div class="container">
+  <h1>New Location</h1>
 
 <%= render 'form', location: @location %>
 
 <%= link_to 'Back', locations_path %>
+</div>
+<!--
+<%= content_for(:after_js) do %>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=#{ENV['GOOGLE_API_BROWSER_KEY']}"></script>
+<% end %>
+ -->
