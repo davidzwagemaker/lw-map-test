@@ -1,12 +1,13 @@
 class LocationsController < ApplicationController
   before_action :set_location, only: [:show, :edit, :update, :destroy]
+  before_action :set_route
 
   # GET /locations
   # GET /locations.json
   def index
     # @locations = Location.all
-    @locations = Location.where.not(latitude: nil, longitude: nil)
-
+    # @locations = Location.where.not(latitude: nil, longitude: nil)
+    @locations = Location.where(route_id: @route.id)
     @markers = @locations.map do |location|
       {
         lat: location.latitude,
@@ -24,6 +25,7 @@ class LocationsController < ApplicationController
   # GET /locations/new
   def new
     @location = Location.new
+    @location.route_id = @route.id
   end
 
   # GET /locations/1/edit
@@ -34,10 +36,11 @@ class LocationsController < ApplicationController
   # POST /locations.json
   def create
     @location = Location.new(location_params)
+    @location.route = @route
 
     respond_to do |format|
       if @location.save
-        format.html { redirect_to @location, notice: 'Location was successfully created.' }
+        format.html { redirect_to route_locations_path, notice: 'Location was successfully created.' }
         format.json { render :show, status: :created, location: @location }
       else
         format.html { render :new }
@@ -51,7 +54,7 @@ class LocationsController < ApplicationController
   def update
     respond_to do |format|
       if @location.update(location_params)
-        format.html { redirect_to @location, notice: 'Location was successfully updated.' }
+        format.html { redirect_to route_locations_path, notice: 'Location was successfully updated.' }
         format.json { render :show, status: :ok, location: @location }
       else
         format.html { render :edit }
@@ -74,6 +77,10 @@ class LocationsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_location
       @location = Location.find(params[:id])
+    end
+
+    def set_route
+      @route = Route.find(params[:route_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
